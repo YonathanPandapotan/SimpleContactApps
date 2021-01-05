@@ -34,7 +34,9 @@ class HomeActivity : AppCompatActivity(), KontakRecyclerAdapter.ItemListener {
     }
 
     override fun onItemClick(kontak: Kontak) {
-        Toast.makeText(applicationContext, "Click", Toast.LENGTH_LONG).show()
+        intent = Intent(applicationContext, DetailContactActivity::class.java)
+        intent.putExtra("kontak", kontak)
+        startActivity(intent)
     }
 
     override fun onLongItemClick(kontak: Kontak) {

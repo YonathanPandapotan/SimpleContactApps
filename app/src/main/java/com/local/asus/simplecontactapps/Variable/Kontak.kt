@@ -1,6 +1,8 @@
 package com.local.asus.simplecontactapps.Variable
 
-class Kontak{
+import java.io.Serializable
+
+class Kontak: Serializable{
 
     // TODO menyimpan gambar pada direktori aplikasi sendiri
     // TODO data kontak disimpan pada sqlite

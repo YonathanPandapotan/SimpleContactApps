@@ -9,7 +9,8 @@
         android:roundIcon="@drawable/apps_logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".AddContactActivity"></activity>
+        <activity android:name=".DetailContactActivity"></activity>
+        <activity android:name=".AddContactActivity" />
         <activity android:name=".HomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
