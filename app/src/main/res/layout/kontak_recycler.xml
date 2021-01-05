@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="12dp"
+    android:weightSum="5">
+    
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginRight="12dp"
+        android:src="@drawable/contact_def_image"/>
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textSize="17sp"
+        android:text="Nama Pengguna"
+        android:layout_gravity="center"
+        android:padding="10dp"
+        android:layout_weight="4"
+        android:id="@+id/recycler_nama"/>
+
+</LinearLayout>
