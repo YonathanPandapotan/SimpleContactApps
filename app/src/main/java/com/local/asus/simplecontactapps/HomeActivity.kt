@@ -1,23 +1,31 @@
 package com.local.asus.simplecontactapps
 
+
+import android.content.DialogInterface
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import com.local.asus.simplecontactapps.RecyclerAdapter.KontakRecyclerAdapter
 import com.local.asus.simplecontactapps.Variable.Kontak
 import kotlinx.android.synthetic.main.home_activity.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.android.synthetic.main.alert_dialog.view.*
 import java.lang.Exception
 
 class HomeActivity : AppCompatActivity(), KontakRecyclerAdapter.ItemListener {
 
+    lateinit var alertDialog: AlertDialog.Builder
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.home_activity)
+
+        alertDialog = AlertDialog.Builder(this)
 
         add_contact.setOnClickListener {
             startActivity(Intent(applicationContext, AddContactActivity::class.java))
@@ -40,6 +48,21 @@ class HomeActivity : AppCompatActivity(), KontakRecyclerAdapter.ItemListener {
     }
 
     override fun onLongItemClick(kontak: Kontak) {
-        Toast.makeText(applicationContext, "Long Click", Toast.LENGTH_LONG).show()
+        var layout = layoutInflater.inflate(R.layout.alert_dialog, null)
+        alertDialog.setView(layout)
+        var dialog = alertDialog.create()
+        layout.alert_cancel.setOnClickListener {
+            Toast.makeText(applicationContext, "Batal hapus", Toast.LENGTH_LONG).show()
+            dialog.dismiss()
+        }
+        layout.alert_confirm.setOnClickListener {
+            Toast.makeText(applicationContext, "Hapus", Toast.LENGTH_LONG).show()
+            dialog.dismiss()
+        }
+
+        if (dialog.window != null)
+            dialog.window!!.getAttributes().windowAnimations = R.style.SlidingDialogAnimation
+
+        dialog.show()
     }
 }
