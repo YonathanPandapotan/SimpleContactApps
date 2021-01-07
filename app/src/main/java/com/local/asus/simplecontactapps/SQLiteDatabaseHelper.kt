@@ -27,6 +27,12 @@ class SQLiteDatabaseHelper(context: Context) : SQLiteOpenHelper(context, "simple
         db.close()
     }
 
+    fun deleteContact(kontak: Kontak){
+        val db = this.writableDatabase
+        val selectionArgs = arrayOf(kontak.nama)
+        db.delete("kontak", "nama LIKE ?", selectionArgs)
+    }
+
     fun getAll(): ArrayList<Kontak>{
         var arr = ArrayList<Kontak>()
         val db = this.writableDatabase
@@ -40,6 +46,8 @@ class SQLiteDatabaseHelper(context: Context) : SQLiteOpenHelper(context, "simple
                 kontak.phone = cursor.getString(1)
                 arr.add(kontak)
             }while (cursor.moveToNext())
+
+            arr = ArrayList(arr.sortedBy { it.nama })
         }
 
         return arr

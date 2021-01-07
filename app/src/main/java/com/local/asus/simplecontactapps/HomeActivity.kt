@@ -20,6 +20,9 @@ class HomeActivity : AppCompatActivity(), KontakRecyclerAdapter.ItemListener {
 
     lateinit var miniAlert: AlertDialog.Builder
     lateinit var deleteAlert: AlertDialog.Builder
+    lateinit var kontakRecyclerAdapter: KontakRecyclerAdapter
+    lateinit var database: SQLiteDatabaseHelper
+    lateinit var arr: ArrayList<Kontak>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,17 +31,36 @@ class HomeActivity : AppCompatActivity(), KontakRecyclerAdapter.ItemListener {
         deleteAlert = AlertDialog.Builder(this)
         miniAlert = AlertDialog.Builder(this)
 
+
+
+        database = SQLiteDatabaseHelper(applicationContext)
+
+        arr = database.getAll()
+
+        kontakRecyclerAdapter = KontakRecyclerAdapter(applicationContext, arr, this, this)
+        kontak_recycler.adapter = kontakRecyclerAdapter
+
+        kontak_recycler.layoutManager = LinearLayoutManager(applicationContext, RecyclerView.VERTICAL, false)
+
         add_contact.setOnClickListener {
-            startActivity(Intent(applicationContext, AddContactActivity::class.java))
+            startActivityForResult(Intent(applicationContext, AddContactActivity::class.java), 1)
         }
 
-        val database = SQLiteDatabaseHelper(applicationContext)
+    }
 
-        var arr = database.getAll()
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
 
-        val kontakRecyclerAdapter = KontakRecyclerAdapter(applicationContext, arr, this, this)
-        kontak_recycler.adapter = kontakRecyclerAdapter
-        kontak_recycler.layoutManager = LinearLayoutManager(applicationContext, RecyclerView.VERTICAL, false)
+        when (requestCode){
+            1 ->{
+                arr.clear()
+                kontakRecyclerAdapter.notifyDataSetChanged()
+                for(kontak in database.getAll()){
+                    arr.add(kontak)
+                    kontakRecyclerAdapter.notifyItemInserted(arr.size-1)
+                }
+            }
+        }
 
     }
 
@@ -56,7 +78,6 @@ class HomeActivity : AppCompatActivity(), KontakRecyclerAdapter.ItemListener {
         var miniLayout = layoutInflater.inflate(R.layout.kontak_mini_menu, null)
         miniLayout.mini_menu_nama.text = kontak.nama
         miniLayout.mini_menu_nomor.text = kontak.phone
-
 
         miniAlert.setView(miniLayout)
         var dialog2 = miniAlert.create()
@@ -76,7 +97,10 @@ class HomeActivity : AppCompatActivity(), KontakRecyclerAdapter.ItemListener {
                 dialog.dismiss()
             }
             layout.alert_confirm.setOnClickListener {
-                Toast.makeText(applicationContext, "Hapus", Toast.LENGTH_LONG).show()
+                val database = SQLiteDatabaseHelper(applicationContext)
+
+                database.deleteContact(kontak)
+                kontakRecyclerAdapter.notifyDataSetChanged()
                 dialog.dismiss()
             }
 

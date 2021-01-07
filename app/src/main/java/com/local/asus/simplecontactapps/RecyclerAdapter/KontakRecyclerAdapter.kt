@@ -10,12 +10,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.local.asus.simplecontactapps.R
 import com.local.asus.simplecontactapps.Variable.Kontak
 import kotlinx.android.synthetic.main.kontak_recycler.view.*
+import java.io.Serializable
 
 class KontakRecyclerAdapter(val context: Context,
                             val array: ArrayList<Kontak>,
                             val mListener: ItemListener,
                             val mLongListener: ItemListener
-                            ): RecyclerView.Adapter<KontakRecyclerAdapter.ViewHolder>() {
+                            ): RecyclerView.Adapter<KontakRecyclerAdapter.ViewHolder>(), Serializable {
 
     inner class ViewHolder(v: View): RecyclerView.ViewHolder(v), View.OnClickListener, View.OnLongClickListener{
 
