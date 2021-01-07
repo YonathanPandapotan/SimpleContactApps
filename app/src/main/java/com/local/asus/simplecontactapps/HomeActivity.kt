@@ -2,6 +2,8 @@ package com.local.asus.simplecontactapps
 
 import android.content.DialogInterface
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -15,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.alert_dialog.view.*
 import kotlinx.android.synthetic.main.kontak_mini_menu.view.*
+import kotlinx.android.synthetic.main.toolbar_layout.*
 
 class HomeActivity : AppCompatActivity(), KontakRecyclerAdapter.ItemListener {
 
@@ -28,24 +31,30 @@ class HomeActivity : AppCompatActivity(), KontakRecyclerAdapter.ItemListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.home_activity)
 
-        deleteAlert = AlertDialog.Builder(this)
-        miniAlert = AlertDialog.Builder(this)
-
-
-
-        database = SQLiteDatabaseHelper(applicationContext)
-
-        arr = database.getAll()
-
-        kontakRecyclerAdapter = KontakRecyclerAdapter(applicationContext, arr, this, this)
-        kontak_recycler.adapter = kontakRecyclerAdapter
-
-        kontak_recycler.layoutManager = LinearLayoutManager(applicationContext, RecyclerView.VERTICAL, false)
+        setToolbar()
+        setRecyclerAndDialog()
 
         add_contact.setOnClickListener {
             startActivityForResult(Intent(applicationContext, AddContactActivity::class.java), 1)
         }
 
+    }
+
+    fun setRecyclerAndDialog(){
+        deleteAlert = AlertDialog.Builder(this)
+        miniAlert = AlertDialog.Builder(this)
+        database = SQLiteDatabaseHelper(applicationContext)
+        arr = database.getAll()
+
+        kontakRecyclerAdapter = KontakRecyclerAdapter(applicationContext, arr, this, this)
+        kontak_recycler.adapter = kontakRecyclerAdapter
+        kontak_recycler.layoutManager = LinearLayoutManager(applicationContext, RecyclerView.VERTICAL, false)
+    }
+
+    fun setToolbar(){
+        setSupportActionBar(toolbar)
+        supportActionBar!!.setDisplayShowTitleEnabled(false)
+        toolbar_title.text = "Kontak"
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -108,30 +117,14 @@ class HomeActivity : AppCompatActivity(), KontakRecyclerAdapter.ItemListener {
                 dialog.window!!.getAttributes().windowAnimations = R.style.SlidingDialogAnimation
 
             dialog.show()
+            dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         }
 
         if (dialog2.window != null)
             dialog2.window!!.getAttributes().windowAnimations = R.style.MiniMenuAnimation
 
         dialog2.show()
-        dialog2.window!!.setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        dialog2.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-
-//        var layout = layoutInflater.inflate(R.layout.alert_dialog, null)
-//        deleteAlert.setView(layout)
-//        var dialog = deleteAlert.create()
-//        layout.alert_cancel.setOnClickListener {
-//            Toast.makeText(applicationContext, "Batal hapus", Toast.LENGTH_LONG).show()
-//            dialog.dismiss()
-//        }
-//        layout.alert_confirm.setOnClickListener {
-//            Toast.makeText(applicationContext, "Hapus", Toast.LENGTH_LONG).show()
-//            dialog.dismiss()
-//        }
-
-//        if (dialog.window != null)
-//            dialog.window!!.getAttributes().windowAnimations = R.style.SlidingDialogAnimation
-//
-//        dialog.show()
     }
 }

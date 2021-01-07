@@ -6,12 +6,15 @@ import android.widget.Toast
 import com.local.asus.simplecontactapps.RecyclerAdapter.KontakRecyclerAdapter
 import com.local.asus.simplecontactapps.Variable.Kontak
 import kotlinx.android.synthetic.main.add_contact_activity.*
+import kotlinx.android.synthetic.main.toolbar_layout.*
 
 class AddContactActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.add_contact_activity)
+
+        setToolbar()
 
         var database = SQLiteDatabaseHelper(applicationContext)
 
@@ -25,6 +28,19 @@ class AddContactActivity : AppCompatActivity() {
             this.finish()
 
         }
+    }
+
+    fun setToolbar(){
+        setSupportActionBar(toolbar)
+        supportActionBar!!.setDisplayShowTitleEnabled(false)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        supportActionBar!!.setDisplayShowHomeEnabled(true)
+        toolbar_title.text = "Kontak Baru"
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
     }
 
 }
