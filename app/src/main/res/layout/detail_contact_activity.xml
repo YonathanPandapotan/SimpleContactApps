@@ -55,6 +55,7 @@
                 android:padding="8dp"
                 android:textColor="@android:color/black"
                 android:id="@+id/no_telp_detail"
+                android:autoLink="phone"
                 android:textSize="16sp"/>
 
         </LinearLayout>

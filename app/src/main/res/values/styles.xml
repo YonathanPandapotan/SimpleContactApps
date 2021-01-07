@@ -20,5 +20,17 @@
         <item name="android:windowExitAnimation">@anim/top_to_bottom</item>
     </style>
 
+    <style name="InputLayoutStyle">
+        <item name="android:background">@drawable/input_text_background</item>
+        <item name="android:layout_marginBottom">5dp</item>
+        <item name="android:layout_marginTop">5dp</item>
+    </style>
+
+    <style name="InputTextStyle">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:padding">16dp</item>
+    </style>
+
 
 </resources>

@@ -57,17 +57,21 @@ class HomeActivity : AppCompatActivity(), KontakRecyclerAdapter.ItemListener {
         toolbar_title.text = "Kontak"
     }
 
+    fun updateRecycler(){
+        arr.clear()
+        kontakRecyclerAdapter.notifyDataSetChanged()
+        for(kontak in database.getAll()){
+            arr.add(kontak)
+            kontakRecyclerAdapter.notifyItemInserted(arr.size-1)
+        }
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         when (requestCode){
             1 ->{
-                arr.clear()
-                kontakRecyclerAdapter.notifyDataSetChanged()
-                for(kontak in database.getAll()){
-                    arr.add(kontak)
-                    kontakRecyclerAdapter.notifyItemInserted(arr.size-1)
-                }
+                updateRecycler()
             }
         }
 
@@ -109,7 +113,7 @@ class HomeActivity : AppCompatActivity(), KontakRecyclerAdapter.ItemListener {
                 val database = SQLiteDatabaseHelper(applicationContext)
 
                 database.deleteContact(kontak)
-                kontakRecyclerAdapter.notifyDataSetChanged()
+                updateRecycler()
                 dialog.dismiss()
             }
 

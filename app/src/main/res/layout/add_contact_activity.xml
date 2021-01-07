@@ -31,25 +31,41 @@
                 android:layout_marginBottom="40dp"
                 android:src="@drawable/contact_def_image"/>
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/nama_kontak"
-                style="@style/Widget.AppCompat.EditText"
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Nama"
-                android:inputType="textCapWords"
-                android:padding="16dp"
-                android:textSize="16sp" />
+                style="@style/InputLayoutStyle"
+                android:hint="Nama">
 
-            <com.google.android.material.textfield.TextInputEditText
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/nama_kontak"
+                    style="@style/InputTextStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textCapWords"
+                    android:textSize="16sp"
+                    android:drawableLeft="@drawable/contact_name"
+                    android:drawablePadding="10dp"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="16dp"
-                style="@style/Widget.AppCompat.EditText"
-                android:textSize="16sp"
-                android:inputType="number"
-                android:hint="Nomor"
-                android:id="@+id/nomor_kontak"/>
+                style="@style/InputLayoutStyle"
+                android:hint="Nomor">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/InputTextStyle"
+                    android:textSize="16sp"
+                    android:inputType="phone"
+                    android:id="@+id/nomor_kontak"
+                    android:drawableLeft="@drawable/number_icon"
+                    android:drawablePadding="10dp"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
 
             <Button
                 android:layout_width="match_parent"

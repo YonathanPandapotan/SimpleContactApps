@@ -8,9 +8,8 @@ import com.local.asus.simplecontactapps.Variable.Kontak
 
 class SQLiteDatabaseHelper(context: Context) : SQLiteOpenHelper(context, "simple_contact", null, 1){
 
-
     override fun onCreate(p0: SQLiteDatabase) {
-        p0.execSQL("CREATE TABLE kontak (nama String, phone String)")
+        p0.execSQL("CREATE TABLE kontak (nama TEXT, phone TEXT)")
     }
 
     override fun onUpgrade(p0: SQLiteDatabase, p1: Int, p2: Int) {
