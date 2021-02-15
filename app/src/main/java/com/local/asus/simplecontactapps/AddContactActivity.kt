@@ -3,39 +3,41 @@ package com.local.asus.simplecontactapps
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
-import com.local.asus.simplecontactapps.RecyclerAdapter.KontakRecyclerAdapter
 import com.local.asus.simplecontactapps.Variable.Kontak
-import kotlinx.android.synthetic.main.add_contact_activity.*
-import kotlinx.android.synthetic.main.toolbar_layout.*
+import com.local.asus.simplecontactapps.databinding.AddContactActivityBinding
+import com.local.asus.simplecontactapps.databinding.ToolbarLayoutBinding
 
 class AddContactActivity : AppCompatActivity() {
+    var angka = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.add_contact_activity)
-
-        setToolbar()
-
         var database = SQLiteDatabaseHelper(applicationContext)
 
-        simpan_button.setOnClickListener{
+        val binding = AddContactActivityBinding.inflate(layoutInflater)
+        setSupportActionBar(binding.includedLayout.toolbar)
+        setToolbar(binding.includedLayout)
+
+        binding.simpanButton.setOnClickListener {
             var kontak = Kontak()
-            kontak.nama = nama_kontak.text.toString()
-            kontak.phone = nomor_kontak.text.toString()
+            kontak.nama = binding.namaKontak.text.toString()
+            kontak.phone = binding.nomorKontak.text.toString()
             database.addContact(kontak)
 
             Toast.makeText(applicationContext, "Berhasil", Toast.LENGTH_LONG).show()
             this.finish()
-
         }
+
+        setContentView(binding.root)
+
     }
 
-    fun setToolbar(){
-        setSupportActionBar(toolbar)
+    fun setToolbar(includedLayout: ToolbarLayoutBinding) {
+        setSupportActionBar(includedLayout.toolbar)
         supportActionBar!!.setDisplayShowTitleEnabled(false)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.setDisplayShowHomeEnabled(true)
-        toolbar_title.text = "Kontak Baru"
+        includedLayout.toolbarTitle.setText("Kontak Baru")
     }
 
     override fun onSupportNavigateUp(): Boolean {

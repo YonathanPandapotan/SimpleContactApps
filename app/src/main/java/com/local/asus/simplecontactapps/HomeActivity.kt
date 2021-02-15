@@ -7,17 +7,23 @@ import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.LinearLayout
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.local.asus.simplecontactapps.RecyclerAdapter.KontakRecyclerAdapter
 import com.local.asus.simplecontactapps.Variable.Kontak
-import kotlinx.android.synthetic.main.home_activity.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.alert_dialog.view.*
-import kotlinx.android.synthetic.main.kontak_mini_menu.view.*
-import kotlinx.android.synthetic.main.toolbar_layout.*
+import com.local.asus.simplecontactapps.Variable.ApiCall
+import com.local.asus.simplecontactapps.Variable.ApiConnection
+import com.local.asus.simplecontactapps.Variable.BodyResponse
+import com.local.asus.simplecontactapps.databinding.AlertDialogBinding
+import com.local.asus.simplecontactapps.databinding.HomeActivityBinding
+import com.local.asus.simplecontactapps.databinding.KontakMiniMenuBinding
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class HomeActivity : AppCompatActivity(), KontakRecyclerAdapter.ItemListener {
 
@@ -26,15 +32,23 @@ class HomeActivity : AppCompatActivity(), KontakRecyclerAdapter.ItemListener {
     lateinit var kontakRecyclerAdapter: KontakRecyclerAdapter
     lateinit var database: SQLiteDatabaseHelper
     lateinit var arr: ArrayList<Kontak>
+    lateinit var apiCal: ApiCall
+    lateinit var layoutBinding: HomeActivityBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.home_activity)
+
+        layoutBinding = HomeActivityBinding.inflate(layoutInflater)
+        setContentView(layoutBinding.root)
+
+//        setContentView(R.layout.home_activity)
+
+        apiCal = ApiConnection.getConnection().create(ApiCall::class.java)
 
         setToolbar()
         setRecyclerAndDialog()
 
-        add_contact.setOnClickListener {
+        layoutBinding.addContact.setOnClickListener {
             startActivityForResult(Intent(applicationContext, AddContactActivity::class.java), 1)
         }
 
@@ -47,14 +61,15 @@ class HomeActivity : AppCompatActivity(), KontakRecyclerAdapter.ItemListener {
         arr = database.getAll()
 
         kontakRecyclerAdapter = KontakRecyclerAdapter(applicationContext, arr, this, this)
-        kontak_recycler.adapter = kontakRecyclerAdapter
-        kontak_recycler.layoutManager = LinearLayoutManager(applicationContext, RecyclerView.VERTICAL, false)
+
+        layoutBinding.kontakRecycler.adapter = kontakRecyclerAdapter
+        layoutBinding.kontakRecycler.layoutManager = LinearLayoutManager(applicationContext, RecyclerView.VERTICAL, false)
     }
 
     fun setToolbar(){
-        setSupportActionBar(toolbar)
+        setSupportActionBar(layoutBinding.includedLayout.toolbar)
         supportActionBar!!.setDisplayShowTitleEnabled(false)
-        toolbar_title.text = "Kontak"
+        layoutBinding.includedLayout.toolbarTitle.text = "Kontak"
     }
 
     fun updateRecycler(){
@@ -64,6 +79,38 @@ class HomeActivity : AppCompatActivity(), KontakRecyclerAdapter.ItemListener {
             arr.add(kontak)
             kontakRecyclerAdapter.notifyItemInserted(arr.size-1)
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.toolbar_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+             R.id.upload -> {
+                 var kontakArr = database.getAll()
+                 var call: Call<BodyResponse> = apiCal.uploadAll(kontakArr)
+                 call.enqueue(object: Callback<BodyResponse>{
+                     override fun onFailure(call: Call<BodyResponse>, t: Throwable) {
+                         Toast.makeText(applicationContext, "Terjadi Kesalahan", Toast.LENGTH_SHORT).show()
+                         Log.d("err", t.toString())
+                     }
+
+                     override fun onResponse(
+                         call: Call<BodyResponse>,
+                         response: Response<BodyResponse>
+                     ) {
+                         Toast.makeText(applicationContext, "Uploaded", Toast.LENGTH_SHORT).show()
+                     }
+
+                 })
+            }
+            R.id.update -> {
+
+            }
+        }
+        return true
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -88,28 +135,37 @@ class HomeActivity : AppCompatActivity(), KontakRecyclerAdapter.ItemListener {
     }
 
     override fun onLongItemClick(kontak: Kontak) {
-        var miniLayout = layoutInflater.inflate(R.layout.kontak_mini_menu, null)
-        miniLayout.mini_menu_nama.text = kontak.nama
-        miniLayout.mini_menu_nomor.text = kontak.phone
+        // Trying to change popup long click into view binding
 
-        miniAlert.setView(miniLayout)
+        var popupBinding = KontakMiniMenuBinding.inflate(layoutInflater)
+        popupBinding.miniMenuNama.text = kontak.nama
+        popupBinding.miniMenuNomor.text = kontak.phone
+
+        var miniLayout = layoutInflater.inflate(R.layout.kontak_mini_menu, null)
+//        miniLayout.mini_menu_nama.text = kontak.nama
+//        miniLayout.mini_menu_nomor.text = kontak.phone
+
+        miniAlert.setView(popupBinding.root)
         var dialog2 = miniAlert.create()
 
-        miniLayout.mini_menu_lihat.setOnClickListener {
+        popupBinding.miniMenuEdit.setOnClickListener {
             startDetailActivity(kontak)
             dialog2.dismiss()
         }
 
-        miniLayout.mini_menu_hapus.setOnClickListener {
+        popupBinding.miniMenuHapus.setOnClickListener {
             dialog2.dismiss()
+
+            var popupAlert = AlertDialogBinding.inflate(layoutInflater)
+
             var layout = layoutInflater.inflate(R.layout.alert_dialog, null)
-            deleteAlert.setView(layout)
+            deleteAlert.setView(popupAlert.root)
             var dialog = deleteAlert.create()
-            layout.alert_cancel.setOnClickListener {
+            popupAlert.alertCancel.setOnClickListener {
                 Toast.makeText(applicationContext, "Batal hapus", Toast.LENGTH_LONG).show()
                 dialog.dismiss()
             }
-            layout.alert_confirm.setOnClickListener {
+            popupAlert.alertConfirm.setOnClickListener {
                 val database = SQLiteDatabaseHelper(applicationContext)
 
                 database.deleteContact(kontak)
